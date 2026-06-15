@@ -28,6 +28,13 @@ public:
     void setNetworkEnabled(bool enabled);
     bool networkEnabled() const { return m_networkEnabled; }
 
+    // Directory holding tiles in the standard z/x/y.png slippy-map layout.
+    // Used both as the read source (checked before any network access, so a
+    // pre-downloaded folder makes the app fully offline) and as the download
+    // cache. Defaults to the platform cache location.
+    void setTileDirectory(const QString& dir);
+    QString tileDirectory() const { return m_cacheDir; }
+
     static int tileSize() { return 256; }
 
 signals:

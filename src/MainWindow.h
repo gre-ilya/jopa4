@@ -17,8 +17,12 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
 
     void loadCsvFile(const QString& path);
+    // Point the map at a folder of pre-downloaded tiles (z/x/y.png) and switch
+    // to offline mode so no network access is attempted.
+    void setTileDirectory(const QString& dir);
 
 private slots:
+    void chooseTileDirectory();
     void onTableChanged();
     void addPointRow();
     void removeSelectedRows();

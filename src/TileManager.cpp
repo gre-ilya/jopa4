@@ -27,6 +27,15 @@ void TileManager::setUrlTemplate(const QString& tmpl) { m_urlTemplate = tmpl; }
 
 void TileManager::setNetworkEnabled(bool enabled) { m_networkEnabled = enabled; }
 
+void TileManager::setTileDirectory(const QString& dir) {
+    if (dir.isEmpty() || dir == m_cacheDir)
+        return;
+    m_cacheDir = dir;
+    QDir().mkpath(m_cacheDir);
+    // Drop in-memory tiles so the new directory is read on the next request.
+    m_memCache.clear();
+}
+
 QString TileManager::key(int z, int x, int y) {
     return QStringLiteral("%1/%2/%3").arg(z).arg(x).arg(y);
 }

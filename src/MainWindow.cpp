@@ -149,6 +149,7 @@ void MainWindow::buildUi() {
     tb->addAction(tr("Zoom +"), m_map, &MapWidget::zoomIn);
     tb->addAction(tr("Zoom -"), m_map, &MapWidget::zoomOut);
     tb->addSeparator();
+    tb->addAction(tr("Offline tiles folder..."), this, &MainWindow::chooseTileDirectory);
     tb->addAction(tr("Export image..."), this, &MainWindow::exportImage);
 
     m_status = new QLabel(this);
@@ -285,6 +286,25 @@ void MainWindow::exportImage() {
         QMessageBox::warning(this, tr("Export"),
                              tr("Failed to save image:\n%1").arg(path));
     }
+}
+
+void MainWindow::setTileDirectory(const QString& dir) {
+    if (dir.isEmpty())
+        return;
+    m_map->tileManager()->setTileDirectory(dir);
+    // Pre-downloaded tiles imply offline use; stop hitting the network.
+    m_chkNetwork->setChecked(false);
+    m_map->tileManager()->setNetworkEnabled(false);
+    m_map->update();
+    updateStatus();
+}
+
+void MainWindow::chooseTileDirectory() {
+    const QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Select offline tiles folder (contains z/x/y.png)"),
+        m_map->tileManager()->tileDirectory());
+    if (!dir.isEmpty())
+        setTileDirectory(dir);
 }
 
 void MainWindow::onMapClicked(double lon, double lat) {
